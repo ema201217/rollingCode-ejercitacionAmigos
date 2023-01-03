@@ -5,21 +5,22 @@
 
 // Debería tener un botón que permitiera borrar todos los amigos
 
-const formCarga = document.getElementById("form-carga");
-const cardsContainer = document.getElementById("cards-container");
-const btnsModify = Array.from(document.getElementsByClassName("btn-modify"));
-const inputName = document.getElementById("input-name");
-const inputImage = document.getElementById("input-image");
-const inputsGender = Array.from(
+// ELEMENTS CONST
+const $formCarga = document.getElementById("form-carga");
+const $cardsContainer = document.getElementById("cards-container");
+const $inputName = document.getElementById("input-name");
+const $inputImage = document.getElementById("input-image");
+const $inputsGender = Array.from(
   document.getElementsByClassName("input-gender")
 );
-const btnSubmit = document.getElementById("btn-submit");
-const inputId = document.getElementById("input-id");
-const btnRemoveAll = document.getElementById("btn-remove-all");
-let amigos = [];
+const $btnSubmit = document.getElementById("btn-submit");
+const $inputId = document.getElementById("input-id");
+const $btnRemoveAll = document.getElementById("btn-remove-all");
+const $prevImg = document.getElementById("prevImg");
 
+// CLASS AMIGO
 class Amigo {
-  constructor([name, img, gender]) {
+  constructor({ name, img, gender }) {
     this.name = name;
     this.gender = gender;
     this.img = img;
@@ -32,51 +33,56 @@ class Amigo {
 }
 
 const pintarCards = (amigos = []) => {
-  cardsContainer.innerHTML = "";
+  $cardsContainer.innerHTML = "";
   amigos.forEach((amigo) => {
-    const template = `<div class="card col-6 col-md-4 col-lg-3" style="width: 18rem;">
-    <button type="button" class="btn-close align-self-end" aria-label="Close" onclick="removeAmigo('${
-      amigo.id
-    }')"></button>
-    <img src="${amigo.img}" class="card-img-top my-2">
-    <div class="card-body">
-      <h5 class="card-title fw-light">Amigo: <span class="fw-bold">${amigo.name?.toUpperCase()}</span></h5>
-      <p class="card-text">Genero: <span class="fw-bold">${
-        amigo.gender
-      }</span></p>
-      <a href="#" class="btn btn-info btn-modify" onclick="modifyAmigo('${
+    const template = `
+    <div class="card col-6 col-md-4 col-lg-3" style="width: 18rem;height: 20rem">
+      <button type="button" class="btn-close align-self-end" aria-label="Close" onclick="removeAmigo('${
         amigo.id
-      }')">Modificar</a>
-    </div>
-  </div>`;
-    cardsContainer.innerHTML += template;
+      }')"></button>
+      <img src="${
+        amigo.img
+      }" class="card-img-top my-2" style="width:100%;height:50%;object-fit:contain">
+      <div class="card-body">
+        <h5 class="card-title fw-light">Amigo: 
+          <span class="fw-bold">${amigo.name?.toUpperCase()}</span>
+        </h5>
+        <p class="card-text">Genero: 
+          <span class="fw-bold">${amigo.gender}</span>
+        </p>
+        <a href="#" class="btn btn-info btn-modify" onclick="modifyAmigo('${
+          amigo.id
+        }')">Modificar</a>
+      </div>
+    </div>`;
+    $cardsContainer.innerHTML += template;
   });
 };
 
-// PROCESO
-
 // ADD OR MODIFY CARD
-formCarga.addEventListener("submit", (event) => {
+$formCarga.addEventListener("submit", (event) => {
   event.preventDefault();
-  btnSubmit.textContent = 'Cargar'
-  if (!inputId.value) {
+  $btnSubmit.textContent = "Cargar"; // cambiamos el contenido del botón submit
+  $prevImg.src =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU";
+  if (!$inputId.value) {
     // Si el input id no esta vació hacer ...
     const inputs = Array.from(event.target.elements).slice(0, 4);
-    const values = [];
+    const amigoObj = {};
     inputs.forEach((input) => {
       if (input.type === "text" || input.checked) {
-        values.push(input.value);
+        amigoObj[input.name] = input.value;
       }
     });
-    const newAmigo = new Amigo(values);
+    const newAmigo = new Amigo(amigoObj);
     amigos = [...amigos, newAmigo];
   } else {
     amigos = amigos.map((amigo) => {
-      if (amigo.id === inputId.value) {
+      if (amigo.id === $inputId.value) {
         return {
-          name: inputName.value,
-          img: inputImage.value,
-          gender: inputsGender.find((input) => input.checked).value,
+          name: $inputName.value,
+          img: $inputImage.value,
+          gender: $inputsGender.find((input) => input.checked).value,
         };
       }
       return amigo;
@@ -87,7 +93,7 @@ formCarga.addEventListener("submit", (event) => {
 });
 
 // REMOVE CARDS
-btnRemoveAll.addEventListener("click", () => {
+$btnRemoveAll.addEventListener("click", () => {
   amigos = [];
   pintarCards(amigos);
 });
@@ -103,16 +109,19 @@ const removeAmigo = (id) => {
 const modifyAmigo = (id) => {
   const amigoFind = amigos.find((amigo) => amigo.id === id);
   if (amigoFind) {
-    btnSubmit.innerHTML = 'Actualizar'
-    inputName.value = amigoFind.name;
-    inputImage.value = amigoFind.img;
-    inputsGender.forEach((gender) => {
+    $btnSubmit.innerHTML = "Actualizar";
+    $inputName.value = amigoFind.name;
+    $inputImage.value = amigoFind.img;
+    $prevImg.src = amigoFind.img;
+    $inputsGender.forEach((gender) => {
       if (gender.value === amigoFind.gender) {
         gender.checked = true;
       }
     });
-    inputId.value = id;
+    $inputId.value = id;
   }
 };
 
-
+$inputImage.addEventListener("change", () => {
+  $prevImg.src = $inputImage.value;
+});
