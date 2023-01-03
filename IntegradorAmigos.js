@@ -14,10 +14,12 @@ const $inputsGender = Array.from(
   document.getElementsByClassName("input-gender")
 );
 const $btnSubmit = document.getElementById("btn-submit");
+const $btnReset = document.getElementById("btn-reset");
 const $inputId = document.getElementById("input-id");
 const $btnRemoveAll = document.getElementById("btn-remove-all");
 const $prevImg = document.getElementById("prevImg");
-let amigos = JSON.parse(localStorage.getItem('amigos')) || [];
+const $errorImg = document.getElementById("error-img");
+let amigos = JSON.parse(localStorage.getItem("amigos")) || [];
 // CLASS AMIGO
 class Amigo {
   constructor({ name, img, gender }) {
@@ -59,7 +61,8 @@ const pintarCards = (amigos = []) => {
   });
 };
 
-const saveLocalStorage = (data) => localStorage.setItem('amigos',JSON.stringify(data))
+const saveLocalStorage = (data) =>
+  localStorage.setItem("amigos", JSON.stringify(data));
 
 // ADD OR MODIFY CARD
 $formCarga.addEventListener("submit", (event) => {
@@ -93,14 +96,14 @@ $formCarga.addEventListener("submit", (event) => {
   }
   event.target.reset();
   pintarCards(amigos);
-  saveLocalStorage(amigos)
+  saveLocalStorage(amigos);
 });
 
 // REMOVE CARDS
 $btnRemoveAll.addEventListener("click", () => {
   amigos = [];
   pintarCards(amigos);
-  saveLocalStorage(amigos)
+  saveLocalStorage(amigos);
 });
 
 // REMOVE CARD BY ID
@@ -108,7 +111,7 @@ const removeAmigo = (id) => {
   const updateAmigos = amigos.filter((amigo) => amigo.id !== id);
   amigos = updateAmigos;
   pintarCards(amigos);
-  saveLocalStorage(amigos)
+  saveLocalStorage(amigos);
 };
 
 // MODIFY CARD
@@ -130,6 +133,16 @@ const modifyAmigo = (id) => {
 
 $inputImage.addEventListener("change", () => {
   $prevImg.src = $inputImage.value;
+  $errorImg.innerText = "";
+  $prevImg.addEventListener("error", (event) => {
+    $errorImg.innerText = "La imagen es invalida o esta dañada";
+    $prevImg.src =
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU";
+  });
 });
+
+$btnReset.onclick = () =>
+  ($prevImg.src =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU");
 
 pintarCards(amigos);

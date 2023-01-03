@@ -25,6 +25,7 @@
           </div>
 
           <img id="prevImg" class="my-2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU" alt="your image" width="200" height="200" style="object-fit: contain;"/>
+          <p class="text-danger" id="error-img"></p>
           <div class="form-floating mb-3">
             <input type="text" name="img" class="form-control" placeholder="Imagen" id="input-image">
             <label class="form-label">Imagen</label>
@@ -46,7 +47,7 @@
           
           <input type="text" hidden id="input-id">
           <button type="submit" class="btn btn-primary" id="btn-submit">Cargar</button>
-          <button type="reset" class="btn btn-danger">Reset</button>
+          <button type="reset" class="btn btn-danger" id="btn-reset">Reset</button>
         </form>
       </div>
       <div class="col-12 col-lg-8 container">
