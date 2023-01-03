@@ -17,14 +17,14 @@ const $btnSubmit = document.getElementById("btn-submit");
 const $inputId = document.getElementById("input-id");
 const $btnRemoveAll = document.getElementById("btn-remove-all");
 const $prevImg = document.getElementById("prevImg");
-
+let amigos = JSON.parse(localStorage.getItem('amigos')) || [];
 // CLASS AMIGO
 class Amigo {
   constructor({ name, img, gender }) {
-    this.name = name;
-    this.gender = gender;
-    this.img = img;
     this.id = this.generateId();
+    this.name = name;
+    this.img = img;
+    this.gender = gender;
   }
 
   generateId() {
@@ -37,12 +37,12 @@ const pintarCards = (amigos = []) => {
   amigos.forEach((amigo) => {
     const template = `
     <div class="card col-6 col-md-4 col-lg-3" style="width: 18rem;height: 20rem">
-      <button type="button" class="btn-close align-self-end" aria-label="Close" onclick="removeAmigo('${
+      <button type="button" class="btn-close align-self-end py-2" aria-label="Close" onclick="removeAmigo('${
         amigo.id
       }')"></button>
       <img src="${
         amigo.img
-      }" class="card-img-top my-2" style="width:100%;height:50%;object-fit:contain">
+      }" class="card-img-top my-2" style="width:100%;height:40%;object-fit:contain">
       <div class="card-body">
         <h5 class="card-title fw-light">Amigo: 
           <span class="fw-bold">${amigo.name?.toUpperCase()}</span>
@@ -58,6 +58,8 @@ const pintarCards = (amigos = []) => {
     $cardsContainer.innerHTML += template;
   });
 };
+
+const saveLocalStorage = (data) => localStorage.setItem('amigos',JSON.stringify(data))
 
 // ADD OR MODIFY CARD
 $formCarga.addEventListener("submit", (event) => {
@@ -80,6 +82,7 @@ $formCarga.addEventListener("submit", (event) => {
     amigos = amigos.map((amigo) => {
       if (amigo.id === $inputId.value) {
         return {
+          id: amigo.id,
           name: $inputName.value,
           img: $inputImage.value,
           gender: $inputsGender.find((input) => input.checked).value,
@@ -90,12 +93,14 @@ $formCarga.addEventListener("submit", (event) => {
   }
   event.target.reset();
   pintarCards(amigos);
+  saveLocalStorage(amigos)
 });
 
 // REMOVE CARDS
 $btnRemoveAll.addEventListener("click", () => {
   amigos = [];
   pintarCards(amigos);
+  saveLocalStorage(amigos)
 });
 
 // REMOVE CARD BY ID
@@ -103,6 +108,7 @@ const removeAmigo = (id) => {
   const updateAmigos = amigos.filter((amigo) => amigo.id !== id);
   amigos = updateAmigos;
   pintarCards(amigos);
+  saveLocalStorage(amigos)
 };
 
 // MODIFY CARD
@@ -125,3 +131,5 @@ const modifyAmigo = (id) => {
 $inputImage.addEventListener("change", () => {
   $prevImg.src = $inputImage.value;
 });
+
+pintarCards(amigos);
