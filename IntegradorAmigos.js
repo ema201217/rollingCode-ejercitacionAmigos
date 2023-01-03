@@ -20,6 +20,9 @@ const $btnRemoveAll = document.getElementById("btn-remove-all");
 const $prevImg = document.getElementById("prevImg");
 const $errorImg = document.getElementById("error-img");
 let amigos = JSON.parse(localStorage.getItem("amigos")) || [];
+const imgDefault =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU";
+
 // CLASS AMIGO
 class Amigo {
   constructor({ name, img, gender }) {
@@ -68,8 +71,8 @@ const saveLocalStorage = (data) =>
 $formCarga.addEventListener("submit", (event) => {
   event.preventDefault();
   $btnSubmit.textContent = "Cargar"; // cambiamos el contenido del botón submit
-  $prevImg.src =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU";
+  $prevImg.src = imgDefault;
+
   if (!$inputId.value) {
     // Si el input id no esta vació hacer ...
     const inputs = Array.from(event.target.elements).slice(0, 4);
@@ -134,15 +137,12 @@ const modifyAmigo = (id) => {
 $inputImage.addEventListener("change", () => {
   $prevImg.src = $inputImage.value;
   $errorImg.innerText = "";
-  $prevImg.addEventListener("error", (event) => {
+  $prevImg.addEventListener("error", () => {
     $errorImg.innerText = "La imagen es invalida o esta dañada";
-    $prevImg.src =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU";
+    $prevImg.src = imgDefault;
   });
 });
 
-$btnReset.onclick = () =>
-  ($prevImg.src =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU");
+$btnReset.onclick = () => ($prevImg.src = imgDefault);
 
 pintarCards(amigos);
